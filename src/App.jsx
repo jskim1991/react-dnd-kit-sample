@@ -8,29 +8,38 @@ import SortableItem from "./SortableItem";
 
 const App = () => {
   const [items, setItems] = useState(tasks);
-  const [active, setActive] = useState(null);
+  const [activeItem, setActiveItem] = useState(null);
 
   const onDragStartHandler = (event) => {
     const { active } = event;
-    const sourceIndex = items.findIndex(({ id }) => id === active.id);
-
-    setActive(items[sourceIndex]);
-
-    const item = document.getElementById(active.id);
-    item.style.backgroundColor = "lightgreen";
-  };
-
-  const onDragMoveHandler = (event) => {
     if (!active) {
       return;
     }
+    const sourceIndex = items.findIndex(({ id }) => id === active.id);
 
-    const item = document.getElementById(active.id);
+    setActiveItem(items[sourceIndex]);
+
+    updateStyles(active.id);
+  };
+
+  const onDragMoveHandler = (event) => {
+    if (!activeItem) {
+      return;
+    }
+
+    const item = document.getElementById(activeItem.id);
     item.style.backgroundColor = "#eee";
   };
 
   const onDragCancelHandler = (event) => {
-    setActive(null);
+    const { active } = event;
+
+    if (!active) {
+      return;
+    }
+
+    setActiveItem(null);
+    resetStyles(active.id);
   };
 
   const onDragEndHandler = (event) => {
@@ -40,9 +49,7 @@ const App = () => {
       return;
     }
 
-    const sourceId = active.id;
-    const destinationId = over.id;
-    if (sourceId === destinationId) {
+    if (active.id === over.id) {
       return;
     }
 
@@ -53,7 +60,20 @@ const App = () => {
     newTaskIds.splice(destinationIndex, 0, items[sourceIndex]);
 
     setItems(newTaskIds);
-    setActive(null);
+    setActiveItem(null);
+
+    resetStyles(active.id);
+  };
+
+  const updateStyles = (itemId) => {
+    const item = document.getElementById(itemId);
+    item.style.backgroundColor = "lightgreen";
+    item.style.zIndex = "99999";
+  };
+
+  const resetStyles = (itemId) => {
+    const item = document.getElementById(itemId);
+    item.style.zIndex = "0";
   };
 
   return (

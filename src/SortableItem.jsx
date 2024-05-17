@@ -1,6 +1,7 @@
 import { useSortable } from "@dnd-kit/sortable";
 
 import classes from "./SortableItem.module.css";
+import SampleChart from "./SampleChart";
 
 const SortableItem = ({ task }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
@@ -23,7 +24,10 @@ const SortableItem = ({ task }) => {
       {...attributes}
       {...listeners}
     >
-      <div>{task.content}</div>
+      <h3>{task.content}</h3>
+      <div className={classes.chart}>
+        <SampleChart numbers={task.numbers} targets={task.targets} />
+      </div>
     </div>
   );
 };
